@@ -1,0 +1,10 @@
+[masters]
+ master ansible_host=x.x.x.x ansible_user=your_user
+ 
+[workers]
+ worker1 ansible_host=x.x.x.x ansible_user=your_user
+ worker2 ansible_host=x.x.x.x ansible_user=your_user
+ 
+#[all:vars]
+# Upadte this to match with your system
+#ansible_python_interpreter=/usr/local/bin/python3
