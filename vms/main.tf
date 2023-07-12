@@ -176,7 +176,7 @@ resource "azurerm_network_interface" "kwk" {
 
  resource "azurerm_linux_virtual_machine" "workers" {
    count                 = 2
-   name                  = "vmtomb11n${count.index}"
+   name                  = "vmaminab11n${count.index}"
    location              = azurerm_resource_group.kube.location
    availability_set_id   = azurerm_availability_set.avset.id
    resource_group_name   = azurerm_resource_group.kube.name
@@ -184,10 +184,10 @@ resource "azurerm_network_interface" "kwk" {
    network_interface_ids = [element(azurerm_network_interface.kwk.*.id, count.index)]
    size               = "Standard_D2ds_v4"
 
-   # Uncomment this line to delete the OS disk automatically when deleting the VM
+   # Uncomment this line to delete the OS disk auaminaatically when deleting the VM
   #delete_os_disk_on_termination = true
 
-   # Uncomment this line to delete the data disks automatically when deleting the VM
+   # Uncomment this line to delete the data disks auaminaatically when deleting the VM
   #delete_data_disks_on_termination = true
 
 os_disk {
