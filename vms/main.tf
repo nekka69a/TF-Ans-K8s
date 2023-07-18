@@ -31,7 +31,7 @@ resource "azurerm_network_security_group" "kube" {
        protocol = "Tcp"
        source_port_range = "*"
        destination_port_range = "80"
-       source_address_prefix = "*"
+       source_address_prefix = var.whitelisted_ip
        destination_address_prefix = "*"
    }
 
@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "kube" {
        protocol = "Tcp"
        source_port_range = "*"
        destination_port_range = "443"
-       source_address_prefix = "*"
+       source_address_prefix = var.whitelisted_ip
        destination_address_prefix = "*"
    }
 
@@ -55,7 +55,7 @@ resource "azurerm_network_security_group" "kube" {
        protocol = "Tcp"
        source_port_range = "*"
        destination_port_range = "22"
-       source_address_prefix = "*"
+       source_address_prefix = var.whitelisted_ip
        destination_address_prefix = "*"
    }
 
@@ -96,18 +96,13 @@ resource "tls_private_key" "sshctl" {
     rsa_bits = 4096
 }
 
-resource "tls_private_key" "sshwks" {
-    algorithm = "RSA"
-    rsa_bits = 4096
-}
-
 resource "azurerm_linux_virtual_machine" "ctlplane" {
   name                = "master.kubernetes.lab"
   resource_group_name = azurerm_resource_group.kube.name
   location            = azurerm_resource_group.kube.location
   size                = "Standard_D2ds_v4"
   admin_username      = "azureuser"
-  admin_password = "azerty123456@"
+  admin_password = "@Azurev69007"
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.kbnic.id,
@@ -184,15 +179,50 @@ resource "azurerm_network_interface" "kwk" {
    network_interface_ids = [element(azurerm_network_interface.kwk.*.id, count.index)]
    size               = "Standard_D2ds_v4"
 
-   # Uncomment this line to delete the OS disk auaminaatically when deleting the VM
+   # Uncomment this line to delete the OS disk automatically when deleting the VM
   #delete_os_disk_on_termination = true
 
-   # Uncomment this line to delete the data disks auaminaatically when deleting the VM
+   # Uncomment this line to delete the data disks automatically when deleting the VM
   #delete_data_disks_on_termination = true
 
 os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
+  }
+
+ source_image_reference {
+    publisher = "OpenLogic"
+    offer     = "CentOS"
+    sku       = "8_5-gen2"
+    version   = "latest"
+  }
+
+admin_ssh_key {
+  username   = "azureuser"
+  public_key = tls_private_key.sshctl.public_key_openssh
+}
+
+   tags = {
+     role = "Workers"
+   }
+}
+
+
+resource "azurerm_network_interface_security_group_association" "linkctlnic" {
+  network_interface_id      = azurerm_network_interface.kbnic.id
+  network_security_group_id = azurerm_network_security_group.kube.id
+ }
+
+resource "azurerm_network_interface_security_group_association" "linkwks1" {
+  network_interface_id      = azurerm_network_interface.kwk[0].id
+  network_security_group_id = azurerm_network_security_group.kube.id
+ }
+
+resource "azurerm_network_interface_security_group_association" "linkwks2" {
+  network_interface_id      = azurerm_network_interface.kwk[1].id
+  network_security_group_id = azurerm_network_security_group.kube.id
+ }
+
   }
 
  source_image_reference {
