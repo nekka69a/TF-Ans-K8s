@@ -22,6 +22,10 @@ output "The_webserver_Public_ip_worker2" {
    value = azurerm_linux_virtual_machine.workers[1].public_ip_address
 }
 
+output "usernames" {
+   value = azurerm_linux_virtual_machine.ctlplane.admin_username
+}
+
 output "VM_Size" {
    value = azurerm_linux_virtual_machine.ctlplane.size
 }
@@ -34,10 +38,6 @@ output "pubsshctl" {
 output "pvtsshctl" {
   value = tls_private_key.sshctl.private_key_pem
 }
-
-output "pubwks" {
-  value     = tls_private_key.sshwks.public_key_pem
-  sensitive = true
 }
 
 output "privatewks" {
