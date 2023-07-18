@@ -14,6 +14,5 @@ provider "azurerm" {
 }
 
 module "vms" {
-    source = "github.com/nekka69a/TF-Ans-K8s/vms"
+    source = "../vms"
 }
-
