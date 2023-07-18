@@ -5,3 +5,7 @@ variable "location" {
 variable "size" {
    type = string
 }
+
+variable "admin_username" {
+   type = string
+}
